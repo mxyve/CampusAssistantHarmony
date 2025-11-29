@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "mcp",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ]
+  }
+}

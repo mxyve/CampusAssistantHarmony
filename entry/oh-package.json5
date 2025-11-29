@@ -1,0 +1,16 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "home": "file:../feature/home",
+    "ai": "file:../feature/ai",
+    "rag": "file:../feature/rag",
+    "mcp": "file:../feature/mcp",
+    "profile": "file:../feature/profile"
+  }
+}
+
