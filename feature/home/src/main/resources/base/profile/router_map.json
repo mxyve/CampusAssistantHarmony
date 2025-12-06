@@ -4,6 +4,21 @@
       "name": "HomePage",
       "pageSourceFile": "src/main/ets/pages/HomePage.ets",
       "buildFunction": "HomePageBuilder"
+    },
+    {
+      "name": "NotificationListPage",
+      "pageSourceFile": "src/main/ets/pages/NotificationListPage.ets",
+      "buildFunction": "NotificationListPageBuilder"
+    },
+    {
+      "name": "NewsListPage",
+      "pageSourceFile": "src/main/ets/pages/NewsListPage.ets",
+      "buildFunction": "NewsListPageBuilder"
+    },
+    {
+      "name": "AllFunctionsPage",
+      "pageSourceFile": "src/main/ets/pages/AllFunctionsPage.ets",
+      "buildFunction": "AllFunctionsPageBuilder"
     }
   ]
 }

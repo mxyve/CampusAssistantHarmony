@@ -1,0 +1,29 @@
+{
+  "routerMap": [
+    {
+      "name": "ProfilePage",
+      "pageSourceFile": "src/main/ets/pages/ProfilePage.ets",
+      "buildFunction": "ProfilePageBuilder"
+    },
+    {
+      "name": "AccountSettingsPage",
+      "pageSourceFile": "src/main/ets/pages/AccountSettingsPage.ets",
+      "buildFunction": "AccountSettingsPageBuilder"
+    },
+    {
+      "name": "NotificationSettingsPage",
+      "pageSourceFile": "src/main/ets/pages/NotificationSettingsPage.ets",
+      "buildFunction": "NotificationSettingsPageBuilder"
+    },
+    {
+      "name": "GeneralSettingsPage",
+      "pageSourceFile": "src/main/ets/pages/GeneralSettingsPage.ets",
+      "buildFunction": "GeneralSettingsPageBuilder"
+    },
+    {
+      "name": "AboutPage",
+      "pageSourceFile": "src/main/ets/pages/AboutPage.ets",
+      "buildFunction": "AboutPageBuilder"
+    }
+  ]
+}

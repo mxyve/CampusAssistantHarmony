@@ -10,7 +10,9 @@
     "ai": "file:../feature/ai",
     "rag": "file:../feature/rag",
     "mcp": "file:../feature/mcp",
-    "profile": "file:../feature/profile"
+    "profile": "file:../feature/profile",
+    "storage": "file:../common/storage",
+    "basic": "file:../common/basic"
   }
 }
 

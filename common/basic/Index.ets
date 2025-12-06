@@ -1,0 +1,4 @@
+// 路由工具
+export { RouterModule } from './src/main/ets/utils/RouterModule'
+
+export { RouterMap, AppStorageMap } from './src/main/ets/constants/CommonEnums'

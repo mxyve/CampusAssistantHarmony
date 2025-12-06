@@ -3,7 +3,8 @@
   "description": "Please describe the basic information.",
   "dependencies": {
     "@hmos/logger-kit": "^1.0.0",
-    "@hmos/ui-base": "^1.0.0"
+    "@hmos/ui-base": "^1.0.0",
+    "@ohos/axios": "^2.2.6"
   },
   "devDependencies": {
     "@ohos/hypium": "1.0.24",

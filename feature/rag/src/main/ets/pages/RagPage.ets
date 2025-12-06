@@ -8,7 +8,9 @@ export function RagPageBuilder() {
 struct RagPage {
   build() {
     NavDestination() {
-
+      Text("RAG")
+        .fontSize(18)
+        .fontWeight(FontWeight.Bold)
     }.hideTitleBar(true);
   }
 }

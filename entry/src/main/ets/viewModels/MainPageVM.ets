@@ -1,5 +1,8 @@
 import { TabListItem } from '../types/Types'
 import { HomePageBuilder } from 'home'
+import { AiPageBuilder } from 'ai'
+import { McpPageBuilder } from 'mcp'
+import { ProfilePageBuilder } from 'profile'
 
 const TAG: string = 'MainPageVM';
 
@@ -17,25 +20,19 @@ export class MainPageVM {
       label: '对话',
       icon: $r('app.media.nav_chat_normal'),
       selectedIcon: $r('app.media.nav_chat_selected'),
-      component: wrapBuilder(HomePageBuilder),
-    },
-    {
-      label: '知识库',
-      icon: $r('app.media.nav_knowledge_normal'),
-      selectedIcon: $r('app.media.nav_knowledge_selected'),
-      component: wrapBuilder(HomePageBuilder),
+      component: wrapBuilder(AiPageBuilder),
     },
     {
       label: '工作台',
       icon: $r('app.media.nav_workbench_normal'),
       selectedIcon: $r('app.media.nav_workbench_selected'),
-      component: wrapBuilder(HomePageBuilder),
+      component: wrapBuilder(McpPageBuilder),
     },
     {
       label: '我的',
       icon: $r('app.media.nav_profile_normal'),
       selectedIcon: $r('app.media.nav_profile_selected'),
-      component: wrapBuilder(HomePageBuilder),
+      component: wrapBuilder(ProfilePageBuilder),
     },
   ];
   private static _instance: MainPageVM;
