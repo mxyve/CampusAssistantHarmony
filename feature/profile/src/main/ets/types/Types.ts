@@ -3,13 +3,11 @@
  */
 export interface UserInfo {
   id: number;
-  name: string;
-  studentId: string;
-  college: string;
-  role: string;
-  avatar?: string;
+  username: string;
+  nickname?: string;
   email?: string;
-  phone?: string;
+  mobile?: string | null;
+  avatar?: string | null;
 }
 
 /**
@@ -31,11 +29,4 @@ export interface SettingItem {
 export interface ProfilePageData {
   userInfo: UserInfo;
   settingItems: SettingItem[];
-}
-
-/**
- * 编辑资料页面参数
- */
-export interface EditProfileParams {
-  userInfo: UserInfo;
 }

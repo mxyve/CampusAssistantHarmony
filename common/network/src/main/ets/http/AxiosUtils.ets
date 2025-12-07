@@ -12,14 +12,13 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
     try {
-      // 获取 token（可能在 storageUtil 初始化前被调用）
+      // 获取 token（兼容 storageUtil 未初始化的情况）
       const token = await storageUtil.get('token');
       if (token) {
         const tokenString = token ? token.toString() : '';
-        config.headers.set('Authorization', `Bearer ${tokenString}`);
+        config.headers.set('Authorization', `Bearer ${tokenString}`); // 鸿蒙 Axios 正确设置 header 方式
       }
     } catch (error) {
-      // 如果 storageUtil 未初始化，忽略错误继续请求
       console.warn('获取 token 失败，可能 storageUtil 未初始化:', error);
     }
     return config;
@@ -31,6 +30,7 @@ axiosInstance.interceptors.request.use(
 
 
 axiosInstance.interceptors.response.use((response: AxiosResponse) => {
+  console.info('✅ axios response:', response.config.url, response.status, response.data)
   return response
 }, (error: AxiosError) => {
   return Promise.reject(error)
@@ -56,3 +56,4 @@ export class AxiosUtil {
     return axiosInstance.delete<null, ResType<T>>(url, { params })
   }
 }
+

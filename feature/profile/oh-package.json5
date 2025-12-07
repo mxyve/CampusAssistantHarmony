@@ -8,6 +8,8 @@
   "dependencies": {
     "storage": "file:../../common/storage",
     "network": "file:../../common/network",
-    'basic': "file:../../common/basic"
+    'basic': "file:../../common/basic",
+    'network': "file:../../common/network",
+    'storage': "file:../../common/storage",
   }
 }
