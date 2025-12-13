@@ -17,6 +17,10 @@ export enum RouterMap {
   NEWS_LIST = 'NewsListPage',
   // ai对话页面
   AI_PAGE = 'AiPage',
+  // 聊天页面
+  CHAT_PAGE = 'ChatPage',
+  // 会话详情页面
+  SESSION_DETAIL_PAGE = 'SessionDetailPage',
   // 知识库页面
   KNOWLEDGE_PAGE = 'KnowledgePage',
   // 工作台页面

@@ -375,16 +375,21 @@ export struct ProfilePage {
       // 1. 清 token + 用户数据
       await storageUtil.delete('token');
       await storageUtil.delete('userInfo');
+      await storageUtil.clear();
 
       // 2. 清全局状态（触发所有 @StorageLink 刷新）
       AppStorage.setOrCreate('isLoggedIn', false);
       AppStorage.setOrCreate('currentUserInfo', null);
+      this.currentUserInfo = null;
 
       // 3. 提示 + 跳转
       promptAction.showToast({ message: '已退出登录', duration: 1500 });
+      RouterModule.clear();
       RouterModule.push(RouterMap.LOGIN_PAGE)
     } catch (e) {
       console.error('退出失败', e);
+      AppStorage.setOrCreate('isLoggedIn', false);
+      AppStorage.setOrCreate('currentUserInfo', null);
     }
   }
 }

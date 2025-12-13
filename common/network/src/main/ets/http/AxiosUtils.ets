@@ -3,7 +3,7 @@ import { BaseResponse } from "../type/CommonType";
 import { storageUtil } from "storage";
 
 export const axiosInstance = axios.create({
-  baseURL: 'http://10.20.50.197:8080',
+  baseURL: 'http://192.168.1.14:6060',
   timeout: 60000,
   headers: {}
 })

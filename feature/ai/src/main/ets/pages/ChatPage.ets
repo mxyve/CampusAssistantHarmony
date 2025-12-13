@@ -1,0 +1,45 @@
+import { RouterModule, RouterMap } from 'basic';
+
+@Builder
+export function ChatPageBuilder() {
+  ChatPage()
+}
+
+@Component
+export struct ChatPage {
+  @State title: string = '动态列表';
+
+  build() {
+    NavDestination() {
+      Column() {
+        Text(this.title)
+          .fontSize(24)
+          .fontWeight(FontWeight.Bold)
+          .margin({ bottom: 20 })
+
+        Text('这里是所有校园动态列表')
+          .fontSize(16)
+          .fontColor('#666666')
+          .margin({ bottom: 10 })
+
+        Text('（页面内容待完善）')
+          .fontSize(14)
+          .fontColor('#999999')
+
+        Button('返回')
+          .margin({ top: 30 })
+          .width('60%')
+          .onClick(() => {
+            RouterModule.pop();
+          })
+      }
+      .width('100%')
+      .height('100%')
+      .padding(20)
+      .justifyContent(FlexAlign.Center)
+      .alignItems(HorizontalAlign.Center)
+      .backgroundColor('#F5F5F5')
+    }
+    .title(this.title)
+  }
+}

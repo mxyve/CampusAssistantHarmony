@@ -5,5 +5,11 @@
   "main": "Index.ets",
   "author": "",
   "license": "Apache-2.0",
-  "dependencies": {}
+  "dependencies": {
+    "storage": "file:../../common/storage",
+    "network": "file:../../common/network",
+    'basic': "file:../../common/basic",
+    'network': "file:../../common/network",
+    'storage': "file:../../common/storage",
+  }
 }
