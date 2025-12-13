@@ -2,3 +2,5 @@
 export { RouterModule } from './src/main/ets/utils/RouterModule'
 
 export { RouterMap, AppStorageMap } from './src/main/ets/constants/CommonEnums'
+
+export { EventSource } from './src/main/ets/utils/EventSourceUtil'
