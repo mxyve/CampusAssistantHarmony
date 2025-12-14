@@ -383,31 +383,22 @@ export struct AiPage {
     this.listScroller.closeAllSwipeActions();
   }
 
-  // AiPage.ts 中的 handleDeleteSession 方法
-  private async handleDeleteSession(item: SessionRecordVO) {
+  // 删除处理方法
+  private handleDeleteSession(item: SessionRecordVO) {
     console.log('执行删除逻辑，会话ID:', item.id);
 
-    try {
-      // 1. 调用后端删除接口
-      const deleteSuccess = await SessionApi.deleteSession(item.id);
-      if (!deleteSuccess) {
-        promptAction.showToast({ message: '删除失败，请重试' });
-        return;
+    // 动画删除
+    animateTo({ duration: 300 }, () => {
+      const index = this.sessionList.findIndex(i => i.id === item.id);
+      if (index !== -1) {
+        this.sessionList.splice(index, 1);
       }
+    });
 
-      // 2. 前端动画删除列表项
-      animateTo({ duration: 300 }, () => {
-        const index = this.sessionList.findIndex(i => i.id === item.id);
-        if (index !== -1) {
-          this.sessionList.splice(index, 1);
-        }
-      });
+    promptAction.showToast({ message: '已删除' });
 
-      promptAction.showToast({ message: '已删除' });
-    } catch (error) {
-      console.error('删除会话失败:', error);
-      promptAction.showToast({ message: '删除失败，请重试' });
-    }
+    // 这里应该调用后端删除接口
+    // await SessionApi.deleteSession(item.id);
   }
 
   // 修改会话项，添加置顶标识

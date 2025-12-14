@@ -15,6 +15,7 @@ export interface SessionRecordVO {
   lastMessageTime: string | null;
   createTime: string;
   updateTime: string;
+  isPinned: boolean;
 }
 
 export interface ApiResponse<T = any> {

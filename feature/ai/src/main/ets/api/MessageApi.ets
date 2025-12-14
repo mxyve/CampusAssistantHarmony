@@ -1,4 +1,3 @@
-// MessageApi.ts - 使用鸿蒙的 http 模块
 import { AxiosUtil } from 'network';
 import http from '@ohos.net.http'; // 导入鸿蒙http模块
 import util from '@ohos.util'; // 导入工具模块
@@ -30,7 +29,7 @@ export interface SSEStreamController {
 /** 消息相关接口 */
 export class MessageApi {
   // 仅在这定义一次baseURL
-  private static readonly BASE_URL = 'http://192.168.1.22:6060';
+  private static readonly BASE_URL = 'http://10.20.50.197:6060';
   private static readonly STREAM_API_PATH = '/api/v1/messages/stream';
 
   /** 查询会话消息历史 */
