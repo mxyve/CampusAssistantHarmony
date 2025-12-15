@@ -65,8 +65,8 @@
       "srcPath": "./feature/rag",
     },
     {
-      "name": "mcp",
-      "srcPath": "./feature/mcp",
+      "name": "workbench",
+      "srcPath": "./feature/workbench"
     },
     {
       "name": "profile",

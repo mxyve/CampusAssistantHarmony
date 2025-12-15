@@ -1,0 +1,54 @@
+{
+  "routerMap": [
+    {
+      "name": "WorkbenchPage",
+      "pageSourceFile": "src/main/ets/pages/WorkbenchPage.ets",
+      "buildFunction": "WorkbenchPageBuilder"
+    },
+    {
+      "name": "CampusCardPage",
+      "pageSourceFile": "src/main/ets/pages/fuwu/CampusCardPage.ets",
+      "buildFunction": "CampusCardPageBuilder"
+    },
+    {
+      "name": "CanteenPage",
+      "pageSourceFile": "src/main/ets/pages/fuwu/CanteenPage.ets",
+      "buildFunction": "CanteenPageBuilder"
+    },
+    {
+      "name": "ClinicPage",
+      "pageSourceFile": "src/main/ets/pages/fuwu/ClinicPage.ets",
+      "buildFunction": "ClinicPageBuilder"
+    },
+    {
+      "name": "ElectricityBillRechargePage",
+      "pageSourceFile": "src/main/ets/pages/fuwu/ElectricityBillRechargePage.ets",
+      "buildFunction": "ElectricityBillRechargePageBuilder"
+    },
+    {
+      "name": "GymPage",
+      "pageSourceFile": "src/main/ets/pages/fuwu/GymPage.ets",
+      "buildFunction": "GymPageBuilder"
+    },
+    {
+      "name": "LibraryPage",
+      "pageSourceFile": "src/main/ets/pages/fuwu/LibraryPage.ets",
+      "buildFunction": "LibraryPageBuilder"
+    },
+    {
+      "name": "LostAndFoundPage",
+      "pageSourceFile": "src/main/ets/pages/fuwu/LostAndFoundPage.ets",
+      "buildFunction": "LostAndFoundPageBuilder"
+    },
+    {
+      "name": "ScholarshipPage",
+      "pageSourceFile": "src/main/ets/pages/fuwu/bailian/ScholarshipPage.ets",
+      "buildFunction": "ScholarshipPageBuilder"
+    },
+    {
+      "name": "TeachingBuildingPage",
+      "pageSourceFile": "src/main/ets/pages/fuwu/TeachingBuildingPage.ets",
+      "buildFunction": "TeachingBuildingPageBuilder"
+    }
+  ]
+}

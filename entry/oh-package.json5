@@ -9,7 +9,7 @@
     "home": "file:../feature/home",
     "ai": "file:../feature/ai",
     "rag": "file:../feature/rag",
-    "mcp": "file:../feature/mcp",
+    "workbench": "file:../feature/workbench",
     "profile": "file:../feature/profile",
     "storage": "file:../common/storage",
     "basic": "file:../common/basic"

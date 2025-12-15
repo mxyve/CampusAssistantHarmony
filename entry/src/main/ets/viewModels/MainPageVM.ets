@@ -1,7 +1,7 @@
 import { TabListItem } from '../types/Types'
 import { HomePageBuilder } from 'home'
 import { AiPageBuilder } from 'ai'
-import { McpPageBuilder } from 'mcp'
+import { WorkbenchPageBuilder } from 'workbench'
 import { ProfilePageBuilder } from 'profile'
 
 const TAG: string = 'MainPageVM';
@@ -26,7 +26,7 @@ export class MainPageVM {
       label: '工作台',
       icon: $r('app.media.nav_workbench_normal'),
       selectedIcon: $r('app.media.nav_workbench_selected'),
-      component: wrapBuilder(McpPageBuilder),
+      component: wrapBuilder(WorkbenchPageBuilder),
     },
     {
       label: '我的',
