@@ -20,6 +20,10 @@ export interface SessionData {
   updateTime: string;
 }
 
+export interface UpdateSessionTitleParams {
+  title: string; // 新的会话标题
+}
+
 /** AI会话相关接口 */
 export class SessionApi {
   /** 分页获取用户会话列表 */
@@ -75,6 +79,30 @@ export class SessionApi {
     } catch (error) {
       console.error('删除会话异常:', error);
       return false;
+    }
+  }
+
+  static async updateSessionTitle(sessionId: number, params: UpdateSessionTitleParams): Promise<SessionData | null> {
+    try {
+      // 后端接口路径：/api/v1/session/{sessionId}/title（PATCH请求）
+      const response = await AxiosUtil.put<SessionData>(
+        `/api/v1/session/${sessionId}/title`,
+        params
+      );
+
+      console.log('修改会话标题响应:', response);
+      console.log('response.data:', JSON.stringify(response.data));
+      console.log('response.data.data:', JSON.stringify(response.data.data));
+
+      if (response.data.code === 200) {
+        return response.data.data; // 返回修改后的会话完整信息
+      } else {
+        console.error(`修改会话标题失败，code: ${response.data.code}, message: ${response.data.message}`);
+        return null;
+      }
+    } catch (error) {
+      console.error('修改会话标题异常:', error);
+      return null;
     }
   }
 }

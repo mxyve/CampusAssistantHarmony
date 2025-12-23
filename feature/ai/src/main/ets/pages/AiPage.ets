@@ -35,6 +35,20 @@ export struct AiPage {
   @StorageLink('currentUserInfo') currentUserInfo: UserInfo | null = null;
   @State isRefreshing: boolean = false; // 下拉刷新状态
   private listScroller: ListScroller = new ListScroller();
+  @State currentEditSession: SessionRecordVO | null = null;
+  @State tempTitle: string = '';
+  // 自定义弹窗控制器（替换原showEditTitleDialog）
+  private editTitleDialogController: CustomDialogController = new CustomDialogController({
+    builder: this.editTitleDialogBuilder.bind(this),
+    cancel: () => {
+      this.tempTitle = '';
+    },
+    autoCancel: true,
+    alignment: DialogAlignment.Center,
+    offset: { dx: 0, dy: 0 },
+    gridCount: 4,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  });
 
   // 添加生命周期函数
   aboutToAppear() {
@@ -158,7 +172,7 @@ export struct AiPage {
                     actionAreaDistance: 120,
                   }
                 })
-              }, (item: SessionRecordVO) => item.id.toString())
+              }, (item: SessionRecordVO) => `${item.id}-${item.updateTime}`)
             }
             .layoutWeight(1)
             .backgroundColor('#FFFFFF')
@@ -176,6 +190,7 @@ export struct AiPage {
       })
       .width('100%')
       .height('100%')
+
     }
   }
 
@@ -252,6 +267,25 @@ export struct AiPage {
   @Builder
   buildSwipeButtons(item: SessionRecordVO) {
     Row() {
+      // 编辑按钮
+      Button({ type: ButtonType.Normal }) {
+        Text('编辑')
+          .fontSize(14)
+          .fontColor('#FFFFFF')
+      }
+      .width(60)
+      .height('100%')
+      .backgroundColor('#4096FF') // 蓝色
+      .borderRadius(0)
+      .onClick(() => {
+        console.log('点击编辑按钮，会话ID:', item.id);
+        // 初始化编辑状态
+        this.currentEditSession = item;
+        this.tempTitle = item.title || '';
+        this.editTitleDialogController.open();
+        this.listScroller.closeAllSwipeActions(); // 关闭左滑菜单
+      })
+
       // 置顶按钮
       Button({ type: ButtonType.Normal }) {
         Text('置顶')
@@ -290,6 +324,125 @@ export struct AiPage {
     }
     .height('100%')
     .justifyContent(FlexAlign.Start)
+  }
+
+  // 修改标题弹窗内容（CustomDialog的builder）
+  @Builder
+  editTitleDialogBuilder() {
+    Column({ space: 16 }) {
+      // 弹窗标题
+      Text('修改会话标题')
+        .fontSize(18)
+        .fontWeight(FontWeight.Medium)
+        .fontColor('#1F2329')
+        .width('100%')
+        .textAlign(TextAlign.Center)
+
+      // 输入框
+      TextInput({
+        placeholder: '请输入新的会话标题',
+        text: this.tempTitle
+      })
+        .fontSize(16)
+        .padding(12)
+        .backgroundColor('#F2F3F5')
+        .borderRadius(6)
+        .width('100%')
+        .onChange((value: string) => {
+          this.tempTitle = value;
+        })
+
+      // 按钮区域
+      Row({ space: 12 }) {
+        // 取消按钮
+        Button('取消', { type: ButtonType.Normal })
+          .fontSize(14)
+          .backgroundColor('#F2F3F5')
+          .fontColor('#1F2329')
+          .borderRadius(6)
+          .layoutWeight(1)
+          .height(40)
+          .onClick(() => {
+            this.editTitleDialogController.close(); // 关闭弹窗
+            this.tempTitle = '';
+          })
+
+        // 确认按钮
+        Button('确认', { type: ButtonType.Normal })
+          .fontSize(14)
+          .backgroundColor('#337EFF')
+          .fontColor('#FFFFFF')
+          .borderRadius(6)
+          .layoutWeight(1)
+          .height(40)
+          .enabled(this.tempTitle.trim().length > 0)
+          .onClick(() => {
+            this.handleUpdateSessionTitle();
+          })
+      }
+      .width('100%')
+    }
+    .width('100%')
+    .padding(20)
+    .backgroundColor('#FFFFFF')
+    .borderRadius(12)
+  }
+
+  // 修改会话标题
+  private async handleUpdateSessionTitle() {
+    // 1. 基本校验
+    if (!this.currentEditSession || !this.tempTitle || this.tempTitle.trim().length === 0) {
+      promptAction.showToast({ message: '标题不能为空' });
+      return;
+    }
+
+    const sessionId = this.currentEditSession.id;
+    const newTitle = this.tempTitle.trim();
+
+    try {
+      // 2. 调后端更新
+      const success = await SessionApi.updateSessionTitle(sessionId, { title: newTitle });
+      if (!success) {
+        promptAction.showToast({ message: '标题修改失败，请重试' });
+        return;
+      }
+
+      // 3. 找到旧元素位置
+      const idx = this.sessionList.findIndex(item => item.id === sessionId);
+      if (idx === -1) { // 理论上不会走到这里
+        promptAction.showToast({ message: '未找到对应会话' });
+        return;
+      }
+
+      // 4. 手动构造全新对象（地址不同 => 响应式生效）
+      const old = this.sessionList[idx];
+      const updatedSession: SessionRecordVO = {
+        id: old.id,
+        title: newTitle,
+        modelName: old.modelName,
+        status: old.status,
+        lastMessage: old.lastMessage,
+        lastMessageTime: old.lastMessageTime,
+        createTime: old.createTime,
+        updateTime: new Date().toISOString(),
+        isPinned: old.isPinned || false
+      };
+
+      // 5. 用新对象替换原位置，并整数组重新赋值触发刷新
+      const newList = this.sessionList.slice(); // 先浅拷贝一份数组
+      newList[idx] = updatedSession;
+      this.sessionList = newList; // 关键：地址变了，UI 立即刷新
+
+      // 6. 收尾
+      promptAction.showToast({ message: '标题修改成功' });
+      this.editTitleDialogController.close();
+      this.tempTitle = '';
+      this.currentEditSession = null;
+      await this.loadSessionList();
+    } catch (error) {
+      console.error('修改标题失败:', error);
+      promptAction.showToast({ message: '标题修改失败，请重试' });
+    }
   }
 
   // 置顶处理方法
