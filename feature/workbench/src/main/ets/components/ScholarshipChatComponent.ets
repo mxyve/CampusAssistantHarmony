@@ -1,4 +1,3 @@
-// ScholarshipChatComponent.ets
 import { ScholarshipApi } from '../api/MessageApi';
 import { MessageBubble } from './MessageBubble';
 import {
@@ -42,7 +41,7 @@ export struct ScholarshipChatComponent {
               time: this.formatTime(item.createTime),
               statusDesc: item.statusDesc,
               userAvatar: $r('app.media.avatar_img'),
-              aiAvatar: $r('app.media.avatar_img'),
+              aiAvatar: $r('app.media.robot'),
               isAssistant: item.role === 'assistant' // 补充isAssistant属性
             })
           })
@@ -53,7 +52,7 @@ export struct ScholarshipChatComponent {
               isUser: false,
               time: '',
               statusDesc: this.currentAssistantMessage.statusDesc,
-              aiAvatar: $r('app.media.avatar_img'),
+              aiAvatar: $r('app.media.robot'),
               isAssistant: true // 补充isAssistant属性
             })
           }

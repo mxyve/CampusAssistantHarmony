@@ -11,6 +11,18 @@
     {
       "name": "EntryAbility_label",
       "value": "智慧学习助手"
+    },
+    {
+      "name": "permission_read_image_video",
+      "value": "需要读取相册图片"
+    },
+    {
+      "name": "permission_write_image_video",
+      "value": "需要保存拍照图片"
+    },
+    {
+      "name": "permission_camera",
+      "value": "需要使用相机拍照"
     }
   ]
 }

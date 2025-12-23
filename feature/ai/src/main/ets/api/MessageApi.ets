@@ -29,7 +29,7 @@ export interface SSEStreamController {
 /** 消息相关接口 */
 export class MessageApi {
   // 仅在这定义一次baseURL
-  private static readonly BASE_URL = 'http://192.168.43.6:6060';
+  private static readonly BASE_URL = 'http://192.168.1.14:6060';
   private static readonly STREAM_API_PATH = '/api/v1/messages/stream';
 
   /** 查询会话消息历史 */

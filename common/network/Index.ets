@@ -1,1 +1,1 @@
-export { AxiosUtil } from './src/main/ets/http/AxiosUtils';
+export { ResType, AxiosUtil, axiosInstance } from './src/main/ets/http/AxiosUtils';

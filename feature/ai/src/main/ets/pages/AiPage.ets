@@ -221,7 +221,7 @@ export struct AiPage {
   @Builder
   buildEmptyView() {
     Column({ space: 12 }) {
-      Image($r('app.media.avatar_img')) // 空状态图标
+      Image($r('app.media.robot')) // 空状态图标
         .width(120)
         .height(120)
         .objectFit(ImageFit.Contain)
@@ -416,11 +416,20 @@ export struct AiPage {
     Row({ space: 12 }) {
       // 左侧图标
       Column() {
-        Image($r('app.media.avatar_img'))
-          .width(40)
-          .height(40)
-          .borderRadius(20)
-          .backgroundColor('#F2F3F5')
+        Stack() {
+          // 光圈背景（根据ID规则生成不同颜色）
+          Circle()
+            .width(46)
+            .height(46)
+            .fill(this.getAvatarCircleColor(item.id || 0))
+            .opacity(0.2)
+
+          Image($r('app.media.robot'))
+            .width(40)
+            .height(40)
+            .borderRadius(20)
+            .backgroundColor('#F2F3F5')
+        }
       }
       .justifyContent(FlexAlign.Center)
 
@@ -541,5 +550,38 @@ export struct AiPage {
     }
     this.isRefreshing = true;
     await this.loadSessionList();
+  }
+
+  // 根据会话ID生成头像光圈颜色的方法
+  private getAvatarCircleColor(sessionId: number): string {
+    // 定义颜色池（可根据需要扩展）
+    const colorPool = [
+      '#337EFF', // 蓝色（默认）
+      '#00C48C', // 绿色（3的倍数）
+      '#FF7D00', // 橙色（4的倍数）
+      '#FF4D4F', // 红色（5的倍数）
+      '#9C6AFF', // 紫色（同时是3和4的倍数）
+      '#FF67A7', // 粉色（同时是4和5的倍数）
+      '#FFC107',// 黄色（同时是3和5的倍数）
+    ];
+
+    // 按ID规则分配颜色
+    if (sessionId % 3 === 0 && sessionId % 4 === 0 && sessionId % 5 === 0) {
+      return colorPool[6]; // 黄色（3、4、5公倍数）
+    } else if (sessionId % 4 === 0 && sessionId % 5 === 0) {
+      return colorPool[5]; // 粉色（4和5公倍数）
+    } else if (sessionId % 3 === 0 && sessionId % 4 === 0) {
+      return colorPool[4]; // 紫色（3和4公倍数）
+    } else if (sessionId % 5 === 0) {
+      return colorPool[3]; // 红色（5的倍数）
+    } else if (sessionId % 4 === 0) {
+      return colorPool[2]; // 橙色（4的倍数）
+    } else if (sessionId % 3 === 0) {
+      return colorPool[1]; // 绿色（3的倍数）
+    } else {
+      // 非特殊倍数：随机选择基础颜色（或固定蓝色）
+      // 如需完全随机：return `#${Math.floor(Math.random()*16777215).toString(16)}`;
+      return colorPool[0]; // 蓝色（默认）
+    }
   }
 }

@@ -4,7 +4,8 @@
   "dependencies": {
     "@hmos/logger-kit": "^1.0.0",
     "@hmos/ui-base": "^1.0.0",
-    "@ohos/axios": "^2.2.6"
+    "@ohos/axios": "^2.2.6",
+    "@luvi/lv-markdown-in": "^3.1.5"
   },
   "devDependencies": {
     "@ohos/hypium": "1.0.24",

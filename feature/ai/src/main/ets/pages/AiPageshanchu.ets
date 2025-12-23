@@ -1,4 +1,4 @@
-import { RouterModule, RouterMap } from 'basic';
+ import { RouterModule, RouterMap } from 'basic';
 import { SessionApi, CreateSessionParams } from '../api/SessionApi';
 import { SessionRecordVO, SessionPageDTO } from '../types/SessionType';
 import promptAction from '@ohos.promptAction';

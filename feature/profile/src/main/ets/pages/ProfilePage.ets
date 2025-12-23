@@ -204,6 +204,11 @@ export struct ProfilePage {
                 .fontSize(14)
                 .fontColor('#666666')
             }
+
+            Button('编辑资料', { type: ButtonType.Normal })
+              .onClick(() => {
+                RouterModule.push(RouterMap.EDIT_PROFILE_PAGE);
+              })
           }
           .layoutWeight(1)
           .alignItems(HorizontalAlign.Start)

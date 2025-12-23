@@ -1,8 +1,11 @@
+import { Markdown } from '@luvi/lv-markdown-in';
+
 interface BorderRadiusStyle {
   topLeft?: number;
   topRight?: number;
   bottomLeft?: number;
   bottomRight?: number;
+  isAssistant?: boolean;
 }
 
 @Component
@@ -13,7 +16,7 @@ export struct MessageBubble {
   @Prop statusDesc: string = '';
   @Prop isAssistant: boolean = false;
   @Prop userAvatar: Resource = $r('app.media.avatar_img'); // 用户头像
-  @Prop aiAvatar: Resource = $r('app.media.avatar_img'); // AI头像
+  @Prop aiAvatar: Resource = $r('app.media.robot'); // AI头像
 
   build() {
     Row() {
@@ -30,15 +33,29 @@ export struct MessageBubble {
 
         // 消息气泡
         Column() {
-          Text(this.content)
-            .fontSize(16)
-            .fontColor(this.isUser ? '#FFFFFF' : '#1F2329')
-            .padding({
-              left: 12,
-              right: 12,
-              top: 10,
-              bottom: 10
+          if (this.isAssistant) {
+            // AI消息：Markdown流式渲染
+            Markdown({
+              text: this.content, // 内容属性（组件入参）
             })
+              .padding({
+                left: 12,
+                right: 12,
+                top: 10,
+                bottom: 10
+              })
+              .width('100%');
+          } else {
+            Text(this.content)
+              .fontSize(16)
+              .fontColor(this.isUser ? '#FFFFFF' : '#1F2329')
+              .padding({
+                left: 12,
+                right: 12,
+                top: 10,
+                bottom: 10
+              })
+          }
         }
         .backgroundColor(this.isUser ? '#337EFF' : '#FFFFFF')
         .borderRadius(this.getBorderRadius())

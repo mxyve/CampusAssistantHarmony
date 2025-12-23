@@ -12,6 +12,30 @@
       {
         "name": "ohos.permission.INTERNET" // 添加网络权限
       },
+      {
+        "name": "ohos.permission.READ_IMAGEVIDEO",
+        "reason": "$string:permission_read_image_video", // 引用字符串资源
+        "usedScene": {
+          "abilities": ["EntryAbility"], // HAR模块无ability，留空（应用层使用时会继承权限）
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.WRITE_IMAGEVIDEO",
+        "reason": "$string:permission_write_image_video", // 引用字符串资源
+        "usedScene": {
+          "abilities": ["EntryAbility"],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.CAMERA",
+        "reason": "$string:permission_camera", // 引用字符串资源
+        "usedScene": {
+          "abilities": ["EntryAbility"],
+          "when": "inuse"
+        }
+      }
     ],
     "deliveryWithInstall": true,
     "installationFree": false,

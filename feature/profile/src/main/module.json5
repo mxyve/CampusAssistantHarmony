@@ -6,6 +6,32 @@
       "default",
       "tablet"
     ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.READ_IMAGEVIDEO",
+        "reason": "$string:permission_read_image_video", // 引用字符串资源
+        "usedScene": {
+          "abilities": [], // HAR模块无ability，留空（应用层使用时会继承权限）
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.WRITE_IMAGEVIDEO",
+        "reason": "$string:permission_write_image_video", // 引用字符串资源
+        "usedScene": {
+          "abilities": [],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.CAMERA",
+        "reason": "$string:permission_camera", // 引用字符串资源
+        "usedScene": {
+          "abilities": [],
+          "when": "inuse"
+        }
+      }
+    ],
     "routerMap": "$profile:router_map"
   }
 }

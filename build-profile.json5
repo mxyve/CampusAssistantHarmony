@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\12862\\.ohos\\config\\default_CampusAssistantHarmony_8I2yUUSQRha8jAolE22RcJ3sS-Ql1Cxl_qG4e_dVctE=.cer",
+          "certpath": "C:\\Users\\12862\\.ohos\\config\\default_CampusAssistantHarmony_YHld93MwZdD1Qpui-ptcEkjoc_D6Vw4mxjWRZFOu4uM=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B07DA2CC74C21F9E36408A2C46C6A6FC0F78683BA573D0E0FDEEA19277CAC67FDC5A451C398157B",
-          "profile": "C:\\Users\\12862\\.ohos\\config\\default_CampusAssistantHarmony_8I2yUUSQRha8jAolE22RcJ3sS-Ql1Cxl_qG4e_dVctE=.p7b",
+          "keyPassword": "0000001AE27B406653DB74E326491D6A76DF73D18A93AB9FA3A82C6A28C63E47E47BE2BCBEC0B58369EA",
+          "profile": "C:\\Users\\12862\\.ohos\\config\\default_CampusAssistantHarmony_YHld93MwZdD1Qpui-ptcEkjoc_D6Vw4mxjWRZFOu4uM=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\12862\\.ohos\\config\\default_CampusAssistantHarmony_8I2yUUSQRha8jAolE22RcJ3sS-Ql1Cxl_qG4e_dVctE=.p12",
-          "storePassword": "0000001B10D7B4AF2F5183E05BEA245B452C014B5E843C1BE825AD6CDEE99CE17CBA52CC98AD2385A97D43"
+          "storeFile": "C:\\Users\\12862\\.ohos\\config\\default_CampusAssistantHarmony_YHld93MwZdD1Qpui-ptcEkjoc_D6Vw4mxjWRZFOu4uM=.p12",
+          "storePassword": "0000001ABD34A9760D2101F98DA4A0548625A81A8BAB8ABBB45208243EB02A14F775BEEFC7BF59DCBC34"
         }
       }
     ],

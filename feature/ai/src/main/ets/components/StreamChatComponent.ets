@@ -55,7 +55,7 @@ export struct StreamChatComponent {
               statusDesc: item.statusDesc,
               isAssistant: item.role === 'assistant',
               userAvatar: $r('app.media.avatar_img'),
-              aiAvatar: $r('app.media.avatar_img')
+              aiAvatar: $r('app.media.robot')
             })
           })
 
@@ -68,7 +68,7 @@ export struct StreamChatComponent {
               statusDesc: this.currentAssistantMessage.statusDesc,
               isAssistant: true,
               userAvatar: $r('app.media.avatar_img'),
-              aiAvatar: $r('app.media.avatar_img')
+              aiAvatar: $r('app.media.robot')
             })
           }
         }

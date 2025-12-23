@@ -98,18 +98,7 @@ export struct SessionDetailPage {
         .fontColor('#1F2329')
         .layoutWeight(1)
         .textAlign(TextAlign.Center)
-
-      Button('测试')
-        .fontSize(12)
-        .backgroundColor('#52C41A')
-        .fontColor('#FFFFFF')
-        .borderRadius(12)
-        .width(60)
-        .height(30)
-        .margin({ left: 8 })
-        .onClick(() => {
-          // 测试逻辑可保留在容器页，或也封装到组件（暴露方法）
-        })
+      
     }
     .padding({
       left: 16,

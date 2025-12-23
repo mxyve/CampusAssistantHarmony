@@ -1,3 +1,5 @@
+import { Markdown } from '@luvi/lv-markdown-in';
+
 interface BorderRadiusStyle {
   topLeft?: number;
   topRight?: number;
@@ -13,7 +15,7 @@ export struct MessageBubble {
   @Prop time: string = '';
   @Prop statusDesc: string = '';
   @Prop userAvatar: Resource = $r('app.media.avatar_img'); // 用户头像
-  @Prop aiAvatar: Resource = $r('app.media.avatar_img'); // 新增：奖助专属AI头像
+  @Prop aiAvatar: Resource = $r('app.media.robot'); // 新增：奖助专属AI头像
   @Prop isAssistant: boolean = false;
 
   build() {
@@ -29,17 +31,32 @@ export struct MessageBubble {
           this.buildAssistantHeader()
         }
 
-        // 消息气泡（样式不变）
+        // 消息气泡（核心修改：AI消息用Markdown渲染）
         Column() {
-          Text(this.content)
-            .fontSize(16)
-            .fontColor(this.isUser ? '#FFFFFF' : '#1F2329')
-            .padding({
-              left: 12,
-              right: 12,
-              top: 10,
-              bottom: 10
+          if (this.isAssistant) {
+            // AI消息：Markdown流式渲染
+            Markdown({
+              text: this.content, // 内容属性（组件入参）
             })
+              .padding({
+                left: 12,
+                right: 12,
+                top: 10,
+                bottom: 10
+              })
+              .width('100%');
+          } else {
+            // 用户消息：保留原有纯文本
+            Text(this.content)
+              .fontSize(16)
+              .fontColor(this.isUser ? '#FFFFFF' : '#1F2329')
+              .padding({
+                left: 12,
+                right: 12,
+                top: 10,
+                bottom: 10
+              });
+          }
         }
         .backgroundColor(this.isUser ? '#337EFF' : '#FFFFFF')
         .borderRadius(this.getBorderRadius())
