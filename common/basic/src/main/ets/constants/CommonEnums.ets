@@ -52,6 +52,10 @@ export enum RouterMap {
   PROFILE_PAGE = 'ProfilePage',
   // 账号设置页面
   ACCOUNT_SETTINGS_PAGE = 'AccountSettingsPage',
+  // 密码设置
+  PASSWORD_SETTINGS_PAGE = 'PasswordSettingsPage',
+  // 解绑手机
+  UNBIND_PHONE_PAGE = 'UnbindPhonePage',
   // 通知设置页面
   NOTIFICATION_SETTINGS_PAGE = 'NotificationSettingsPage',
   // 通用设置页面

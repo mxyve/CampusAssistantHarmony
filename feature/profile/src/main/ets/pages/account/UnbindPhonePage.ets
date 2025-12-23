@@ -1,13 +1,13 @@
 import { RouterModule, RouterMap } from 'basic';
 
 @Builder
-export function AccountSettingsPageBuilder() {
-  AccountSettingsPage()
+export function UnbindPhonePageBuilder() {
+  UnbindPhonePage()
 }
 
 
 @Component
-export struct AccountSettingsPage {
+export struct UnbindPhonePage {
   @State title: string = '全部功能';
 
   build() {

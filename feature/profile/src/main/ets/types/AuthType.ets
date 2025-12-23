@@ -66,3 +66,20 @@ export interface FormDataItem {
   filename: string;
   contentType: string;
 }
+
+/**
+ * 重置密码参数类型
+ */
+export interface ResetPasswordDTO {
+  mobile: string;
+  code: string;
+  newPassword: string;
+}
+
+
+// 通用响应类型（如果未定义）
+export interface ApiResponse<T> {
+  code: number;
+  message: string;
+  data: T;
+}

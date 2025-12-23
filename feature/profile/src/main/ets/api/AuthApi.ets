@@ -1,4 +1,4 @@
-import { LoginDTO, SmsDTO, TokenVO } from '../types/AuthType';
+import { LoginDTO, SmsDTO, TokenVO, ResetPasswordDTO } from '../types/AuthType';
 import { AxiosUtil } from 'network';
 
 /**
@@ -64,6 +64,30 @@ export class AuthApi {
     } catch (error) {
       console.error('账号密码登录异常：', error);
       return null;
+    }
+  }
+
+  /**
+   * 短信验证码重置/设置密码
+   * @param params 重置密码参数（手机号+验证码+新密码）
+   * @returns 成功返回提示语，失败返回 null
+   */
+  static async resetPassword(params: ResetPasswordDTO): Promise<string | null> {
+    try {
+      // 调用后端重置密码接口
+      const response = await AxiosUtil.post<null>('/api/v1/auth/reset-password', params);
+
+      if (response.data.code === 200) {
+        // 返回后端的成功提示（如"密码重置成功"）
+        return response.data.message || '密码设置成功';
+      } else {
+        console.error(`重置密码失败，code: ${response.data.code}, message: ${response.data.message}`);
+        // 把后端的错误提示返回给页面，方便展示
+        return response.data.message || '密码设置失败';
+      }
+    } catch (error) {
+      console.error('重置密码异常：', error);
+      return '网络异常，请稍后重试';
     }
   }
 }

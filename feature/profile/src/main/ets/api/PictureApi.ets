@@ -136,7 +136,7 @@ export class PictureApi {
 
     return new Promise<string | null>((resolve) => {
       const httpRequest = http.createHttp();
-      const uploadUrl = 'http://192.168.1.14:6060/api/v1/users/me/image';
+      const uploadUrl = 'http://192.168.0.102:6060/api/v1/users/me/image';
 
       // 修改3：新增Content-Length请求头（Tomcat解析必需）
       const headers: RequestHeaders = {

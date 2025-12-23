@@ -6,7 +6,7 @@ import {
 } from '../types/ScholarshipType';
 
 export class ScholarshipApi {
-  private static readonly BASE_URL = 'http://192.168.1.14:6060';
+  private static readonly BASE_URL = 'http://192.168.0.102:6060';
   private static readonly STREAM_API = '/ai/bailian/agent/stream';
 
   static async streamChat(options: ScholarshipStreamOptions): Promise<SSEStreamController> {

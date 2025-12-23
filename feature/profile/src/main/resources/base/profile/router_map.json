@@ -7,7 +7,7 @@
     },
     {
       "name": "AccountSettingsPage",
-      "pageSourceFile": "src/main/ets/pages/AccountSettingsPage.ets",
+      "pageSourceFile": "src/main/ets/pages/account/AccountSettingsPage.ets",
       "buildFunction": "AccountSettingsPageBuilder"
     },
     {
@@ -34,6 +34,16 @@
       "name": "EditProfilePage",
       "pageSourceFile": "src/main/ets/pages/EditProfilePage.ets",
       "buildFunction": "EditProfilePageBuilder"
+    },
+    {
+      "name": "PasswordSettingsPage",
+      "pageSourceFile": "src/main/ets/pages/account/PasswordSettingsPage.ets",
+      "buildFunction": "PasswordSettingsPageBuilder"
+    },
+    {
+      "name": "UnbindPhonePage",
+      "pageSourceFile": "src/main/ets/pages/account/UnbindPhonePage.ets",
+      "buildFunction": "UnbindPhonePageBuilder"
     }
   ]
 }
