@@ -1,8 +1,8 @@
-// StreamChatComponent.ets
 import { MessageApi, StreamChatOptions, SSEStreamController } from '../api/MessageApi';
 import { MessageBubble } from '../components/MessageBubble';
 import { storageUtil } from 'storage';
 import promptAction from '@ohos.promptAction';
+import { GenerateSessionTitleParams, SessionApi } from '../api/SessionApi';
 
 // 对外暴露的属性
 interface StreamChatComponentProps {
@@ -10,6 +10,7 @@ interface StreamChatComponentProps {
   initialMessages: MessageItem[]; // 初始历史消息
   userId: number; // 当前用户ID
   isLoggedIn: boolean; // 登录状态
+  onSendMessage: (message: string) => Promise<void>; // 消息发送回调
 }
 
 // 消息项类型（和原页面保持一致）
@@ -25,6 +26,12 @@ export interface MessageItem {
   createTime: string;
 }
 
+export interface SendMessageEvent {
+  action: 'sendFirstMessage'; // 固定值类型
+  sessionId: number;
+  message: string;
+}
+
 @Component
 export struct StreamChatComponent {
   @Prop sessionId: number;
@@ -36,10 +43,14 @@ export struct StreamChatComponent {
   @State isSending: boolean = false;
   @State currentAssistantMessage: MessageItem | null = null;
   private streamController: SSEStreamController | null = null;
+  @State isNewSession: boolean = false;
+  @State hasGeneratedTitle: boolean = false;
 
   // 组件初始化：同步初始历史消息
   aboutToAppear() {
     this.messageList = [...this.initialMessages];
+    this.isNewSession = this.initialMessages.length === 0;
+    console.log(`🔍会话${this.sessionId}是否为新建:`, this.isNewSession);
   }
 
   build() {
@@ -132,6 +143,15 @@ export struct StreamChatComponent {
       return;
     }
 
+    // 用户消息
+    const userMessage = this.inputText.trim();
+
+    if (this.isNewSession && !this.hasGeneratedTitle && this.messageList.length === 0) {
+      console.log(`📢新建会话${this.sessionId}第一条消息，开始生成标题:`, userMessage);
+      await this.callGenerateTitleApi(userMessage);
+      this.hasGeneratedTitle = true; // 标记已生成，避免重复
+    }
+
     // 1. 获取Token
     let token = '';
     try {
@@ -142,8 +162,6 @@ export struct StreamChatComponent {
       return;
     }
 
-    // 2. 构建用户消息
-    const userMessage = this.inputText.trim();
     this.inputText = '';
     this.isSending = true;
 
@@ -300,5 +318,30 @@ export struct StreamChatComponent {
   // 组件销毁时关闭连接
   aboutToDisappear() {
     this.streamController?.close();
+  }
+
+  private async callGenerateTitleApi(userMessage: string) {
+    try {
+      const params: GenerateSessionTitleParams = {
+        userFirstMessage: userMessage.trim()
+      };
+      const result = await SessionApi.generateSessionTitle(this.sessionId, params);
+
+      if (result) {
+        console.log(`🤖会话${this.sessionId}自动生成标题成功:`, result.title);
+        // 通知ChatPage更新标题
+        postCardAction(this, {
+          action: 'updateSessionTitle',
+          params: {
+            sessionId: this.sessionId,
+            title: result.title
+          }
+        });
+      } else {
+        console.error(`❌会话${this.sessionId}生成标题接口返回null`);
+      }
+    } catch (error) {
+      console.error(`❌会话${this.sessionId}调用生成标题接口异常:`, error);
+    }
   }
 }

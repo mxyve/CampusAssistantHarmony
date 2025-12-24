@@ -1,6 +1,5 @@
 import { RouterModule, RouterMap } from 'basic';
 import { StreamChatComponent, MessageItem } from '../components/StreamChatComponent';
-import { storageUtil } from 'storage';
 import promptAction from '@ohos.promptAction';
 
 interface UserInfo {
@@ -22,6 +21,8 @@ export struct ChatPage {
   @Watch('onLoginStateChange')
   @StorageLink('isLoggedIn') isLoggedIn: boolean = false;
   @StorageLink('currentUserInfo') currentUserInfo: UserInfo | null = null;
+  // 存储会话标题（用于页面显示）
+  @State sessionTitle: string = '新建对话';
 
   aboutToAppear() {
     // 1. 获取跳转携带的sessionId
@@ -30,7 +31,7 @@ export struct ChatPage {
 
     if (param && param['sessionId']) {
       this.sessionId = param['sessionId'];
-      console.log('ChatPage获取到sessionId:', this.sessionId);
+      console.log('🔢ChatPage获取到sessionId:', this.sessionId);
     } else {
       console.error('ChatPage未获取到sessionId');
       promptAction.showToast({ message: '会话ID异常' });
@@ -43,6 +44,18 @@ export struct ChatPage {
     console.log('ChatPage登录状态变化:', this.isLoggedIn);
     if (!this.isLoggedIn) {
       RouterModule.push(RouterMap.AI_PAGE); // 退出登录返回列表页
+    }
+  }
+
+  // 通知AiPage刷新列表
+  private notifyAiPageRefresh() {
+    try {
+      postCardAction(this, {
+        action: 'refreshSessionList',
+        params: {}
+      });
+    } catch (error) {
+      console.error('通知刷新失败:', error);
     }
   }
 
@@ -78,9 +91,10 @@ export struct ChatPage {
         .borderRadius(16)
         .onClick(() => {
           RouterModule.push(RouterMap.AI_PAGE); // 返回AI列表页
+          this.notifyAiPageRefresh(); // 返回时强制刷新AiPage列表
         })
 
-      Text('新建对话')
+      Text(this.sessionTitle)
         .fontSize(18)
         .fontWeight(FontWeight.Medium)
         .fontColor('#1F2329')
