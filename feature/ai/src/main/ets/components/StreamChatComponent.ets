@@ -3,6 +3,9 @@ import { MessageBubble } from '../components/MessageBubble';
 import { storageUtil } from 'storage';
 import promptAction from '@ohos.promptAction';
 import { GenerateSessionTitleParams, SessionApi } from '../api/SessionApi';
+import photoAccessHelper from '@ohos.file.photoAccessHelper';
+import { uploadChatImages } from '../api/ChatImageUpload';
+import { MessageAttachment } from '../api/MessageApi';
 
 // 对外暴露的属性
 interface StreamChatComponentProps {
@@ -24,12 +27,18 @@ export interface MessageItem {
   status: number;
   statusDesc: string;
   createTime: string;
+  imageUrls?: string[];
 }
 
 export interface SendMessageEvent {
   action: 'sendFirstMessage'; // 固定值类型
   sessionId: number;
   message: string;
+}
+
+interface SelectOptions {
+  MIMEType: photoAccessHelper.PhotoViewMIMETypes;
+  maxSelectNumber: number;
 }
 
 @Component
@@ -45,6 +54,10 @@ export struct StreamChatComponent {
   private streamController: SSEStreamController | null = null;
   @State isNewSession: boolean = false;
   @State hasGeneratedTitle: boolean = false;
+  @State selectedImageUris: string[] = []; // 已选待传
+  @State uploadingImages: boolean = false; // 上传中遮罩
+  @State uploadedUrls: string[] = []; // OSS 公网地址
+  @State previewImages: string[] = []; // 本地缩略图（可选）
 
   // 组件初始化：同步初始历史消息
   aboutToAppear() {
@@ -68,7 +81,24 @@ export struct StreamChatComponent {
               userAvatar: $r('app.media.avatar_img'),
               aiAvatar: $r('app.media.robot')
             })
-          })
+            if (item.role === 'user' && item.imageUrls && item.imageUrls.length > 0) {
+              Row() {
+                Scroll() {
+                  Row({ space: 6 }) {
+                    ForEach(item.imageUrls, (url: string) => {
+                      Image(url)
+                        .width(60)
+                        .height(60)
+                        .objectFit(ImageFit.Cover)
+                        .borderRadius(4)
+                    }, (url: string) => url)
+                  }
+                }
+                .scrollable(ScrollDirection.Horizontal)
+              }
+              .padding({ top: 8 })
+            }
+          }, (item: MessageItem) => item.id.toString())
 
           // 正在回复的AI消息
           if (this.currentAssistantMessage) {
@@ -98,47 +128,82 @@ export struct StreamChatComponent {
 
   @Builder
   buildInputArea() {
-    Row({ space: 8 }) {
-      TextInput({ text: this.inputText })
-        .layoutWeight(1)
-        .backgroundColor('#FFFFFF')
-        .borderColor('#E5E6EB')
-        .borderWidth(1)
-        .borderRadius(20)
-        .padding({ left: 16, right: 16 })
-        .height(40)
-        .onChange((value: string) => {
-          this.inputText = value;
-        })
-        .onSubmit(() => {
-          if (this.inputText.trim() && !this.isSending) {
-            this.sendMessage();
+    Column({ space: 8 }) { // ← 用 Column 包两层
+      // ① 图片预览横条（有图才显示）
+      if (this.uploadedUrls.length > 0) {
+        Row() {
+          Scroll() {
+            Row({ space: 8 }) {
+              ForEach(this.uploadedUrls, (url: string, index: number) => {
+                Stack() {
+                  Image(this.previewImages[index] || url)
+                    .width(60)
+                    .height(60)
+                    .objectFit(ImageFit.Cover)
+                    .borderRadius(8)
+                  Image($r('app.media.robot'))
+                    .width(16)
+                    .height(16)
+                    .position({ right: 2, top: 2 })
+                    .onClick(() => this.removeImage(index))
+                }
+              }, (url: string) => url)
+            }
           }
-        })
+          .scrollable(ScrollDirection.Horizontal)
+          .padding({ top: 8, bottom: 8 }) //  ArkTS 语法修正
+        }
+        .padding({ left: 16, right: 16 })
+        .backgroundColor('#FFFFFF')
+      }
 
-      Button(this.isSending ? '发送中...' : '发送', { type: ButtonType.Normal })
-        .fontSize(14)
-        .backgroundColor(this.isSending ? '#A0CFFF' : '#337EFF')
-        .fontColor('#FFFFFF')
-        .borderRadius(20)
-        .width(80)
-        .height(40)
-        .enabled(!this.isSending && !!this.inputText.trim())
-        .onClick(() => {
-          this.sendMessage();
-        })
+      // ② 输入框行（与原来完全一致）
+      Row({ space: 8 }) {
+        Button()
+          .type(ButtonType.Circle)
+          .width(40)
+          .height(40)
+          .backgroundColor('#F5F5F5')
+          .onClick(() => this.selectChatImages())
+          .enabled(!this.uploadingImages)
+
+        TextInput({ text: $$this.inputText })
+          .layoutWeight(1)
+          .backgroundColor('#FFFFFF')
+          .borderColor('#E5E6EB')
+          .borderWidth(1)
+          .borderRadius(20)
+          .padding({ left: 16, right: 16 })
+          .height(40)
+
+        Button(this.isSending ? '发送中...' : '发送', { type: ButtonType.Normal })
+          .fontSize(14)
+          .backgroundColor(this.isSending ? '#A0CFFF' : '#337EFF')
+          .fontColor('#FFFFFF')
+          .borderRadius(20)
+          .width(80)
+          .height(40)
+          .onClick(() => {
+            this.sendMessage(); // 添加点击事件
+          })
+          .enabled(!this.isSending && // 不在发送中
+            (this.inputText.trim().length > 0 || this.uploadedUrls.length > 0))
+      }
+      .padding(16)
+      .backgroundColor('#FFFFFF')
+      .borderColor('#E5E6EB')
+      .borderWidth({ top: 1 })
     }
-    .padding(16)
-    .backgroundColor('#FFFFFF')
-    .borderColor('#E5E6EB')
-    .borderWidth({ top: 1 })
   }
 
   // 核心：发送消息+SSE流式处理（原页面的sendMessage逻辑迁移）
   private async sendMessage() {
-    if (!this.inputText.trim() || this.isSending || !this.isLoggedIn) {
+    console.info('sendMessage 入口', 'inputText:', this.inputText, 'uploadedUrls:', this.uploadedUrls);
+    if ((!this.inputText.trim() && this.uploadedUrls.length === 0) || this.isSending || !this.isLoggedIn) {
       if (!this.isLoggedIn) {
         promptAction.showToast({ message: '请先登录后再发送消息' });
+      } else {
+        promptAction.showToast({ message: '请输入文字或添加图片' });
       }
       return;
     }
@@ -162,7 +227,6 @@ export struct StreamChatComponent {
       return;
     }
 
-    this.inputText = '';
     this.isSending = true;
 
     const userMsgItem: MessageItem = {
@@ -171,10 +235,11 @@ export struct StreamChatComponent {
       userId: this.userId,
       role: 'user',
       content: userMessage,
-      modelName: 'qwen-turbo',
+      modelName: 'qwen-plus',
       status: 1,
       statusDesc: '成功',
-      createTime: new Date().toISOString()
+      createTime: new Date().toISOString(),
+      imageUrls: this.uploadedUrls.length ? [...this.uploadedUrls] : undefined
     };
 
     const assistantMsgItem: MessageItem = {
@@ -183,7 +248,7 @@ export struct StreamChatComponent {
       userId: 0,
       role: 'assistant',
       content: '',
-      modelName: 'qwen-turbo',
+      modelName: 'qwen-plus',
       status: 0,
       statusDesc: '思考中...',
       createTime: new Date().toISOString()
@@ -192,6 +257,18 @@ export struct StreamChatComponent {
     // 更新消息列表
     this.messageList = [...this.messageList, userMsgItem];
     this.currentAssistantMessage = assistantMsgItem;
+
+    console.info('即将发送的流式请求体:', JSON.stringify({
+      sessionId: this.sessionId,
+      modelName: 'qwen-turbo',
+      content: userMessage, // ← 重点看这个字段
+      attachments: this.selectedImageUris.map((u): MessageAttachment => ({
+        type: 'image',
+        url: u,
+        name: 'chat.jpg',
+        size: 0
+      }))
+    }));
 
     try {
       // 关闭旧连接
@@ -205,7 +282,14 @@ export struct StreamChatComponent {
         params: {
           sessionId: this.sessionId,
           modelName: 'qwen-turbo',
-          content: userMessage
+          content: userMessage,
+          attachments: this.selectedImageUris.length
+            ? this.selectedImageUris.map((u): MessageAttachment => ({
+              type: 'image',
+              url: u,
+              name: 'chat.jpg',
+              size: 0
+            })) : undefined
         },
         onMessage: (data: string) => {
           const lines = data.split('\n');
@@ -253,7 +337,7 @@ export struct StreamChatComponent {
         if (this.isSending && accumulatedContent === '') {
           this.handleStreamEnd('请求超时，请重试', false);
         }
-      }, 30000);
+      }, 180000);
 
     } catch (error) {
       console.error('发送消息失败:', error);
@@ -290,7 +374,7 @@ export struct StreamChatComponent {
         modelName: this.currentAssistantMessage.modelName,
         status: success ? 1 : 2,
         statusDesc: success ? '成功' : '失败',
-        createTime: new Date().toISOString()
+        createTime: new Date().toISOString(),
       };
       this.messageList = [...this.messageList, completedMsg];
       this.currentAssistantMessage = null;
@@ -300,6 +384,10 @@ export struct StreamChatComponent {
     this.streamController?.close();
     this.streamController = null;
     this.isSending = false;
+    this.uploadedUrls = [];
+    this.previewImages = [];
+    this.inputText = '';
+    this.selectedImageUris = [];
   }
 
   // 工具方法：格式化时间
@@ -343,5 +431,44 @@ export struct StreamChatComponent {
     } catch (error) {
       console.error(`❌会话${this.sessionId}调用生成标题接口异常:`, error);
     }
+  }
+
+  private async selectChatImages() {
+    try {
+      const photoPicker = new photoAccessHelper.PhotoViewPicker();
+      const selectOptions: SelectOptions = {
+        MIMEType: photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE,
+        maxSelectNumber: 9   // 一次最多 9 张
+      };
+      const pickResult = await photoPicker.select(selectOptions);
+      if (!pickResult?.photoUris?.length) {
+        return;
+      }
+
+      this.uploadingImages = true;
+      const urls = await uploadChatImages(pickResult.photoUris);
+      if (urls.length) {
+        this.selectedImageUris = urls; // 保存已上传 URL
+        this.uploadedUrls = urls; // 发送用
+        this.previewImages = pickResult.photoUris; // 本地缩略图
+        promptAction.showToast({ message: `已上传 ${urls.length} 张图片` });
+      } else {
+        promptAction.showToast({ message: '图片上传失败' });
+      }
+    } catch (e) {
+      console.error('选图失败', e);
+    } finally {
+      this.uploadingImages = false;
+    }
+  }
+
+  private removeImage(index: number) {
+    this.uploadedUrls.splice(index, 1);
+    this.previewImages.splice(index, 1);
+    this.selectedImageUris.splice(index, 1);
+    // 触发刷新
+    this.uploadedUrls = [...this.uploadedUrls];
+    this.previewImages = [...this.previewImages];
+    this.selectedImageUris = [...this.selectedImageUris];
   }
 }

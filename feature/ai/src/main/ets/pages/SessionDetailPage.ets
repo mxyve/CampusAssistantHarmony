@@ -98,7 +98,7 @@ export struct SessionDetailPage {
         .fontColor('#1F2329')
         .layoutWeight(1)
         .textAlign(TextAlign.Center)
-      
+
     }
     .padding({
       left: 16,
@@ -122,7 +122,18 @@ export struct SessionDetailPage {
       modelName: record.modelName,
       status: record.status,
       statusDesc: record.statusDesc,
-      createTime: record.createTime
+      createTime: record.createTime,
+      imageUrls: this.safeImageUrls(record)
     };
+  }
+
+  private safeImageUrls(record: MessageRecordVO): string[] {
+    if (!record.imageUrls) {
+      return [];
+    }
+    return record.imageUrls
+      .split(',')
+      .map(u => u.trim())
+      .filter(Boolean);
   }
 }

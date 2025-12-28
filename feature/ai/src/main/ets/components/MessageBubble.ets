@@ -17,6 +17,7 @@ export struct MessageBubble {
   @Prop isAssistant: boolean = false;
   @Prop userAvatar: Resource = $r('app.media.avatar_img'); // 用户头像
   @Prop aiAvatar: Resource = $r('app.media.robot'); // AI头像
+  @Prop imageUrls?: string[];
 
   build() {
     Row() {

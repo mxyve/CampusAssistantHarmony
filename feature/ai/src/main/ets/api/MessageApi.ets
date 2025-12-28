@@ -6,11 +6,19 @@ import {
   MessageListResponseData, MessagePageDTO, MessageQueryParams, MessageRecordVO
 } from '../types/MessageType';
 
+export interface MessageAttachment {
+  type: 'image';
+  url: string;
+  name?: string;
+  size?: number;
+}
+
 /** 流式参数定义 */
 export interface StreamChatParams {
   sessionId: number;
   modelName: string;
   content: string;
+  attachments?: MessageAttachment[];
 }
 
 export interface StreamChatOptions {

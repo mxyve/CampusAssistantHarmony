@@ -14,6 +14,7 @@ export interface MessageRecordVO {
   statusDesc: string;
   createTime: string;
   updateTime: string;
+  imageUrls?: string;
 }
 
 /** 消息列表分页响应 */
