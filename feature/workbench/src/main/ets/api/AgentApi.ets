@@ -2,9 +2,6 @@ import { AxiosUtil } from 'network';
 import http from '@ohos.net.http'; // 导入鸿蒙http模块
 import util from '@ohos.util'; // 导入工具模块
 import { storageUtil } from 'storage';
-import {
-  MessageListResponseData, MessagePageDTO, MessageQueryParams, MessageRecordVO
-} from '../types/MessageType';
 
 export interface MessageAttachment {
   type: 'image';
@@ -35,51 +32,13 @@ export interface SSEStreamController {
 }
 
 /** 消息相关接口 */
-export class MessageApi {
+export class AgentApi {
   // 仅在这定义一次baseURL
   private static readonly BASE_URL = 'http://192.168.0.102:6060';
   private static readonly STREAM_API_PATH = '/api/v1/agent/stream';
 
-  /** 查询会话消息历史 */
-  static async getMessageList(params: MessagePageDTO): Promise<MessageListResponseData | null> {
-    try {
-      const queryParams: MessageQueryParams = {
-        current: params.current || 1,
-        size: params.size || 20
-      };
-
-      console.log('发送消息列表请求，参数:', params, queryParams);
-
-      const response = await AxiosUtil.get<MessageRecordVO[]>(
-        `/api/v1/messages/session/${params.sessionId}`,
-        queryParams
-      );
-
-      console.log('消息API响应:', response);
-      console.log('响应数据:', response.data);
-
-      if (Array.isArray(response.data)) {
-        const result: MessageListResponseData = {
-          current: 1,
-          size: response.data.length,
-          total: response.data.length,
-          pages: 1,
-          records: response.data
-        };
-        console.log('转换后的数据:', result);
-        return result;
-      } else {
-        console.error('响应数据不是数组格式:', response.data);
-        return null;
-      }
-    } catch (error) {
-      console.error('获取消息列表异常:', error);
-      return null;
-    }
-  }
-
   /** 使用鸿蒙 http 模块实现流式聊天请求 */
-  // MessageApi.ts - 修改流式请求方法
+  // AgentApi.ts - 修改流式请求方法
   static async streamChat(options: StreamChatOptions): Promise<SSEStreamController> {
     let httpRequest: http.HttpRequest | null = null;
     let isClosed = false;
@@ -104,7 +63,7 @@ export class MessageApi {
 
       // 2. 构造请求体
       const requestBody = JSON.stringify(options.params);
-      const fullStreamUrl = `${MessageApi.BASE_URL}${MessageApi.STREAM_API_PATH}`;
+      const fullStreamUrl = `${AgentApi.BASE_URL}${AgentApi.STREAM_API_PATH}`;
 
       console.log('SSE请求URL:', fullStreamUrl);
       console.log('请求体:', requestBody);

@@ -47,6 +47,8 @@ export enum RouterMap {
   CLINIC_PAGE = 'ClinicPage',
   // 失物招领页面
   LOST_AND_FOUND_PAGE = 'LostAndFoundPage',
+  // 校园卡助手页面
+  CAMPUS_ASSISTANT_AGENT_PAGE = 'CampusAssistantAgentPage',
 
   // 个人主页
   PROFILE_PAGE = 'ProfilePage',

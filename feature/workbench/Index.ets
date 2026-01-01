@@ -18,3 +18,5 @@ export { ScholarshipPageBuilder } from './src/main/ets/pages/fuwu/bailian/Schola
 
 export { TeachingBuildingPageBuilder } from './src/main/ets/pages/fuwu/TeachingBuildingPage';
 
+export { CampusAssistantAgentPageBuilder } from './src/main/ets/pages/fuwu/agent/CampusAssistantAgentPage';
+

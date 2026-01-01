@@ -16,7 +16,6 @@ export interface SessionRecordVO {
   createTime: string;
   updateTime: string;
   isPinned: boolean;
-  agentType?: string;
 }
 
 export interface ApiResponse<T = any> {

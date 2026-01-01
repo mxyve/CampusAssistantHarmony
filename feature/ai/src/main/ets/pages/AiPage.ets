@@ -14,10 +14,18 @@ interface UserInfo {
 
 interface SessionDetailParams {
   sessionId: number;
+  agentType?: string;
 }
 
 interface ChatPageParams {
   sessionId: number;
+  agentType?: string;
+}
+
+export interface AgentLabelConfig {
+  showLabel: boolean;
+  labelText: string;
+  labelColor: string;
 }
 
 @Builder
@@ -598,6 +606,21 @@ export struct AiPage {
             .maxLines(1)
             .textOverflow({ overflow: TextOverflow.Ellipsis })
 
+          if (this.getAgentLabelConfig(item.agentType).showLabel) {
+            Text(this.getAgentLabelConfig(item.agentType).labelText)
+              .fontSize(10)
+              .fontColor(this.getAgentLabelConfig(item.agentType).labelColor)
+              .backgroundColor(`${this.getAgentLabelConfig(item.agentType).labelColor}10`)
+              .padding({
+                left: 4,
+                right: 4,
+                top: 2,
+                bottom: 2
+              })
+              .borderRadius(2)
+              .margin({ left: 4 });
+          }
+
           // 如果置顶，显示置顶标签
           if (item.isPinned) {
             Text('[置顶]')
@@ -671,7 +694,8 @@ export struct AiPage {
     // 2. 构建请求参数
     const createParams: CreateSessionParams = {
       title: '我的AI对话',
-      modelName: 'qwen-turbo'
+      modelName: 'qwen-turbo',
+      agentType: 'normal'
     };
 
     // 3. 调用创建会话接口
@@ -683,7 +707,10 @@ export struct AiPage {
     if (result && result.id) {
       // 4. 创建成功，携带sessionId跳转到ChatPage
       console.log('新建会话ID:', result.id);
-      const jumpParams: ChatPageParams = { sessionId: result.id };
+      const jumpParams: ChatPageParams = {
+        sessionId: result.id,
+        agentType: createParams.agentType
+      };
       RouterModule.push(RouterMap.CHAT_PAGE, jumpParams, () => {
         console.log('从ChatPage返回，自动刷新列表');
         setTimeout(() => {
@@ -736,5 +763,38 @@ export struct AiPage {
       // 如需完全随机：return `#${Math.floor(Math.random()*16777215).toString(16)}`;
       return colorPool[0]; // 蓝色（默认）
     }
+  }
+
+  // AiPage 组件内新增：获取智能体标签配置（抽离业务逻辑，避免在UI区域写switch）
+  private getAgentLabelConfig(agentType?: string): AgentLabelConfig {
+    let labelText = '';
+    let labelColor = '';
+    let showLabel = false;
+
+    if (!agentType) {
+      return { showLabel: false, labelText: '', labelColor: '' };
+    }
+
+    switch (agentType) {
+      case 'edu_agent':
+        labelText = '教务智能体';
+        labelColor = '#00C48C';
+        showLabel = true;
+        break;
+      case 'resume_agent':
+        labelText = '简历智能体';
+        labelColor = '#9C6AFF';
+        showLabel = true;
+        break;
+      case 'normal':
+        showLabel = false; // 普通AI不展示
+        break;
+      default:
+        labelText = '未知智能体';
+        labelColor = '#8F959E';
+        showLabel = true;
+    }
+
+    return { showLabel, labelText, labelColor };
   }
 }

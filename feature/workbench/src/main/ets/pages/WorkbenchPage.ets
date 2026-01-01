@@ -1,4 +1,7 @@
 import { RouterModule, RouterMap } from 'basic';
+import { SessionApi, CreateSessionParams } from '../api/SessionApi'; // 路径根据你的项目调整
+import promptAction from '@ohos.promptAction';
+import { storageUtil } from 'storage'; // 若需要获取用户信息/登录状态，按需导入
 
 // 服务图标数据类型定义（仅保留核心字段）
 interface ServiceItem {
@@ -6,6 +9,19 @@ interface ServiceItem {
   name: string;
   icon: Resource;
   path: string;
+}
+
+export interface ChatPageJumpParams {
+  sessionId: number;
+}
+
+interface UserInfo {
+  id?: number;
+  username?: string;
+  nickname?: string;
+  avatar?: string;
+  email?: string;
+  mobile?: string;
 }
 
 @Builder
@@ -26,9 +42,9 @@ struct WorkbenchPage {
     },
     {
       id: 2,
-      name: '食堂',
-      icon: $r('app.media.ic_school_cafeteria'),
-      path: RouterMap.CANTEEN_PAGE
+      name: '校园助手',
+      icon: $r('app.media.ic_campus_assistant'),
+      path: RouterMap.CAMPUS_ASSISTANT_AGENT_PAGE
     },
     {
       id: 3,
@@ -73,6 +89,8 @@ struct WorkbenchPage {
       path: RouterMap.LOST_AND_FOUND_PAGE
     }
   ];
+  @StorageLink('isLoggedIn') isLoggedIn: boolean = false; // 同步全局登录状态（布尔类型，无需异步获取）
+  @StorageLink('currentUserInfo') currentUserInfo: UserInfo | null = null; // 同步全局用户信息
 
   build() {
     NavDestination() {
@@ -102,8 +120,13 @@ struct WorkbenchPage {
                           .borderRadius(10)
                           .padding(10)
                           .onClick(() => {
-                            // 仅保留跳转逻辑
-                            RouterModule.push(subItem.path);
+                            if (subItem.name === '校园助手') {
+                              // 校园助手：调用创建会话并跳转的方法
+                              this.handleCampusAssistantClick();
+                            } else {
+                              // 其他服务：保持原有直接跳转逻辑
+                              RouterModule.push(subItem.path);
+                            }
                           })
 
                         Text(subItem.name)
@@ -130,5 +153,45 @@ struct WorkbenchPage {
         .backgroundColor('#F9F9F9')
       }
     }.hideTitleBar(true);
+  }
+
+  private async handleCampusAssistantClick() {
+    // 1. 登录状态校验（参考 AiPage，直接使用 @StorageLink 绑定的 isLoggedIn，无需异步）
+    if (!this.isLoggedIn) { // 直接判断布尔类型，无类型转换问题
+      promptAction.showToast({ message: '请先登录后使用校园助手' });
+      return;
+    }
+
+    // 可选：如需用户ID（如创建会话需要关联用户），参考 AiPage 获取
+    const userId = this.currentUserInfo?.id;
+    if (!userId) {
+      promptAction.showToast({ message: '用户信息不完整，请重新登录' });
+      return;
+    }
+
+    // 2. 构建创建会话参数，指定agentType为edu_agent（原有逻辑不变）
+    const createParams: CreateSessionParams = {
+      title: '校园助手会话',
+      modelName: 'qwen-turbo',
+      agentType: 'edu_agent'
+    };
+
+    try {
+      promptAction.showToast({ message: '正在初始化校园助手...' });
+      // 3. 调用创建会话接口（原有逻辑不变）
+      const sessionResult = await SessionApi.createSession(createParams);
+      if (!sessionResult || !sessionResult.id) {
+        promptAction.showToast({ message: '校园助手初始化失败' });
+        return;
+      }
+
+      // 4. 会话创建成功，携带sessionId跳转到ChatPage（原有逻辑不变）
+      RouterModule.push(RouterMap.CHAT_PAGE, {
+        sessionId: sessionResult.id
+      } as ChatPageJumpParams);
+    } catch (error) {
+      console.error('创建校园助手会话失败:', error);
+      promptAction.showToast({ message: '校园助手初始化失败，请重试' });
+    }
   }
 }

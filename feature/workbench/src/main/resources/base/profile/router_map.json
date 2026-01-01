@@ -49,6 +49,11 @@
       "name": "TeachingBuildingPage",
       "pageSourceFile": "src/main/ets/pages/fuwu/TeachingBuildingPage.ets",
       "buildFunction": "TeachingBuildingPageBuilder"
+    },
+    {
+      "name": "CampusAssistantAgentPage",
+      "pageSourceFile": "src/main/ets/pages/fuwu/agent/CampusAssistantAgentPage.ets",
+      "buildFunction": "CampusAssistantAgentPageBuilder"
     }
   ]
 }

@@ -5,6 +5,13 @@ import {
   ScholarshipStreamOptions, SSEStreamController, ScholarshipStreamParams
 } from '../types/ScholarshipType';
 
+export interface MessageAttachment {
+  type: 'image';
+  url: string;
+  name?: string;
+  size?: number;
+}
+
 export class ScholarshipApi {
   private static readonly BASE_URL = 'http://192.168.0.102:6060';
   private static readonly STREAM_API = '/ai/bailian/agent/stream';
