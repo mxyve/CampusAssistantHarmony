@@ -1,11 +1,6 @@
 {
   "routerMap": [
     {
-      "name": "ProfilePage",
-      "pageSourceFile": "src/main/ets/pages/ProfilePage.ets",
-      "buildFunction": "ProfilePageBuilder"
-    },
-    {
       "name": "AccountSettingsPage",
       "pageSourceFile": "src/main/ets/pages/account/AccountSettingsPage.ets",
       "buildFunction": "AccountSettingsPageBuilder"

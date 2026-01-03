@@ -1,6 +1,4 @@
-import { CommonNavBar, NavBarOptions } from '@hmos/common-nav-bar';
 import { RouterModule, RouterMap } from 'basic';
-import router from '@ohos.router';
 
 interface SettingItem {
   name: string;
@@ -15,17 +13,6 @@ export function AccountSettingsPageBuilder() {
 @Component
 export struct AccountSettingsPage {
   @State title: string = '账号设置';
-  // 导航栏配置 - CommonNavBar 会自动处理状态栏
-  @State navBarOptions: NavBarOptions = {
-    title: '账号设置',
-    showBack: true,
-    onBackClick: () => {
-      router.back();
-    },
-    backgroundColor: '#FFFFFF', // ✅ 白色背景
-    titleColor: '#000000', // ✅ 黑色标题
-    divider: true
-  };
   /* 数据模型 */
   @State settingList: SettingItem[] = [
     { name: '密码设置', route: RouterMap.PASSWORD_SETTINGS_PAGE },
@@ -35,10 +22,18 @@ export struct AccountSettingsPage {
   build() {
     NavDestination() {
       Column() {
-        // 使用 CommonNavBar 组件，它会自动处理状态栏
-        CommonNavBar({
-          options: this.navBarOptions
-        })
+        /* 顶部标题栏 */
+        Row() {
+          Text(this.title)
+            .fontSize(20)
+            .fontWeight(FontWeight.Medium)
+            .fontColor('#000000')
+        }
+        .width('100%')
+        .height(56)
+        .padding({ left: 16, right: 16 })
+        .alignItems(VerticalAlign.Center)
+        .backgroundColor('#FFFFFF')
 
         /* 列表区域 */
         List() {
@@ -61,7 +56,7 @@ export struct AccountSettingsPage {
               .backgroundColor('#FFFFFF')
               .borderRadius(12)
               .onClick(() => {
-                RouterModule.push(item.route);
+                RouterModule.push(item.route); // ✅ 直接传字符串
               })
               .stateStyles({
                 pressed: {
@@ -88,13 +83,12 @@ export struct AccountSettingsPage {
           startMargin: 16,
           endMargin: 16
         })
+
       }
       .width('100%')
       .height('100%')
       .backgroundColor('#F5F5F5')
     }
     .title(this.title)
-    .hideTitleBar(true)
-    .hideBackButton(true)
   }
 }

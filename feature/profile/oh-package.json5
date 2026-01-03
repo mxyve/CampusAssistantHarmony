@@ -8,8 +8,9 @@
   "dependencies": {
     "storage": "file:../../common/storage",
     "network": "file:../../common/network",
-    'basic': "file:../../common/basic",
-    'network': "file:../../common/network",
-    'storage': "file:../../common/storage",
-  }
+    "basic": "file:../../common/basic",
+    "@hmos/common-nav-bar": "1.0.2"
+  },
+  "devDependencies": {},
+  "dynamicDependencies": {}
 }
