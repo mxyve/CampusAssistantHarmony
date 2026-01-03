@@ -123,6 +123,8 @@ struct WorkbenchPage {
                             if (subItem.name === '校园助手') {
                               // 校园助手：调用创建会话并跳转的方法
                               this.handleCampusAssistantClick();
+                            } else if (subItem.name === '校园卡') {
+                              this.handleCampusCardClick();
                             } else {
                               // 其他服务：保持原有直接跳转逻辑
                               RouterModule.push(subItem.path);
@@ -186,12 +188,52 @@ struct WorkbenchPage {
       }
 
       // 4. 会话创建成功，携带sessionId跳转到ChatPage（原有逻辑不变）
-      RouterModule.push(RouterMap.CHAT_PAGE, {
+      RouterModule.push(RouterMap.CAMPUS_ASSISTANT_AGENT_PAGE, {
         sessionId: sessionResult.id
       } as ChatPageJumpParams);
     } catch (error) {
       console.error('创建校园助手会话失败:', error);
       promptAction.showToast({ message: '校园助手初始化失败，请重试' });
+    }
+  }
+
+  private async handleCampusCardClick() {
+    // 1. 登录状态校验（参考 AiPage，直接使用 @StorageLink 绑定的 isLoggedIn，无需异步）
+    if (!this.isLoggedIn) { // 直接判断布尔类型，无类型转换问题
+      promptAction.showToast({ message: '请先登录后使用校园助手' });
+      return;
+    }
+
+    // 可选：如需用户ID（如创建会话需要关联用户），参考 AiPage 获取
+    const userId = this.currentUserInfo?.id;
+    if (!userId) {
+      promptAction.showToast({ message: '用户信息不完整，请重新登录' });
+      return;
+    }
+
+    // 2. 构建创建会话参数，指定agentType为edu_agent（原有逻辑不变）
+    const createParams: CreateSessionParams = {
+      title: '校园卡助手会话',
+      modelName: 'qwen-turbo',
+      agentType: 'campus_card'
+    };
+
+    try {
+      promptAction.showToast({ message: '正在初始化校园卡助手...' });
+      // 3. 调用创建会话接口（原有逻辑不变）
+      const sessionResult = await SessionApi.createSession(createParams);
+      if (!sessionResult || !sessionResult.id) {
+        promptAction.showToast({ message: '校园卡助手初始化失败' });
+        return;
+      }
+
+      // 4. 会话创建成功，携带sessionId跳转到ChatPage（原有逻辑不变）
+      RouterModule.push(RouterMap.CAMPUS_CARD_PAGE, {
+        sessionId: sessionResult.id
+      } as ChatPageJumpParams);
+    } catch (error) {
+      console.error('创建校园卡助手会话失败:', error);
+      promptAction.showToast({ message: '校园卡助手初始化失败，请重试' });
     }
   }
 }

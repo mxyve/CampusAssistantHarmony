@@ -781,8 +781,8 @@ export struct AiPage {
         labelColor = '#00C48C';
         showLabel = true;
         break;
-      case 'resume_agent':
-        labelText = '简历智能体';
+      case 'campus_card':
+        labelText = '校园卡智能体';
         labelColor = '#9C6AFF';
         showLabel = true;
         break;

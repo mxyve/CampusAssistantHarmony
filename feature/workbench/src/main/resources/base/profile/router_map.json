@@ -7,7 +7,7 @@
     },
     {
       "name": "CampusCardPage",
-      "pageSourceFile": "src/main/ets/pages/fuwu/CampusCardPage.ets",
+      "pageSourceFile": "src/main/ets/pages/fuwu/agent/CampusCardPage.ets",
       "buildFunction": "CampusCardPageBuilder"
     },
     {

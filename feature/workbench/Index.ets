@@ -1,6 +1,6 @@
 export { WorkbenchPageBuilder } from './src/main/ets/pages/WorkbenchPage';
 
-export { CampusCardPageBuilder } from './src/main/ets/pages/fuwu/CampusCardPage';
+export { CampusCardPageBuilder } from './src/main/ets/pages/fuwu/agent/CampusCardPage';
 
 export { CanteenPageBuilder } from './src/main/ets/pages/fuwu/CanteenPage';
 
